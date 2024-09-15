@@ -15,6 +15,7 @@ import Mdi_open_in_new from "./components/icons/link/mdi_open_in_new.vue";
 import Mdi_map_marker_radius_outline from "./components/icons/contact/mdi_map_marker_radius_outline.vue";
 import Mdi_phone_outline from "./components/icons/contact/mdi_phone_outline.vue";
 import Mdi_email_outline from "./components/icons/contact/mdi_email_outline.vue";
+import Mdi_arrow_up from "./components/icons/link/mdi_arrow_up.vue";
 
 const isDark = ref<boolean>(true);
 const navToggle = ref<boolean>(false);
@@ -520,6 +521,13 @@ const projects: projectsType[] = [
       </div>
     </div>
   </footer>
+
+  <!-- Scroll to top -->
+  <a href="#top"
+    class="fixed z-20 bottom-6 right-6 w-10 h-10 grid place-items-center text-light-heading-color border-2 border-solid border-light-heading-color rounded-full transition-all duration-200 ease-in-out dark:text-dark-heading-color dark:border-dark-heading-color"
+    :class="{ 'opacity-0 pointer-events-none translate-y-3': !isScroll, 'opacity-100 pointer-events-auto translate-y-0': isScroll }">
+    <Mdi_arrow_up class="fill-light-heading-color dark:fill-dark-heading-color" />
+  </a>
 </template>
 
 <style scoped>
