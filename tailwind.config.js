@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     colors: {
+      transparent: "transparent",
       white: "#FFFFFF",
       black: "#000000",
       "input-placeholder-color": "#9E9E9E",
@@ -23,7 +25,18 @@ export default {
         "input-background-color": "#F5F5F5",
       },
     },
-    extend: {},
+    extend: {
+      boxShadow: {
+        light: "10px 10px 40px #00000010",
+        dark: "10px 10px 40px #317DC610",
+      },
+      transitionTimingFunction: {
+        "nav-buzier": "cubic-bezier(0.71, 0.01, 0.24, 0.99)",
+      },
+      transformOrigin: {
+        "left-top": "left top",
+      },
+    },
   },
   plugins: [],
 };

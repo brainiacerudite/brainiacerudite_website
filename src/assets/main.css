@@ -1,3 +1,48 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  font-family: "Inter", sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-light-background-color text-light-text-color;
+}
+
+.dark body {
+  @apply bg-dark-background-color text-dark-text-color;
+}
+
+::selection {
+  @apply bg-dark-background-color text-dark-text-color;
+}
+
+.dark ::selection {
+  @apply bg-light-background-color text-light-text-color;
+}
+
+input,
+button,
+select,
+textarea {
+  background: none;
+  border: none;
+  font: inherit;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+
+li {
+  list-style: none;
+}
+
+@media (min-width: 1024px) {
+  .section-subtitle {
+    transform: rotate(0.75turn) translateX(-100%);
+  }
+}
