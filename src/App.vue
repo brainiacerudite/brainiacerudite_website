@@ -22,9 +22,21 @@ const navToggle = ref<boolean>(false);
 const isScroll = ref<boolean>(false);
 const activeStack = ref<'tech' | 'tool'>('tech')
 
+const name = ref<string>('');
+const email = ref<string>('');
+const phone = ref<string>('');
+const message = ref<string>('');
+interface formResponseType {
+  status: string;
+  message: string;
+  errors?: string[];
+}
+const formResponse = ref<formResponseType | null>(null);
+const isLoading = ref<boolean>(false)
+
 onMounted(() => {
   window.addEventListener('scroll', () => {
-    isScroll.value = window.scrollY >= 10 ? true : false
+    isScroll.value = window.scrollY >= 12 ? true : false
   })
 })
 
@@ -44,6 +56,50 @@ const changeTheme = (): void => {
 
 const getSocialValue = (name: string) => {
   return socialsLinks.find((social) => social.name === name)?.value
+}
+
+const sendEmail = async () => {
+  isLoading.value = true
+  try {
+    const response = await fetch('/api', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name.value,
+        email: email.value,
+        phone: phone.value,
+        message: message.value,
+      }),
+    });
+
+    const data = await response.json();
+    formResponse.value = data;
+    // log
+    if (data.status === 'success') {
+      console.log('Message sent successfully:', data.message);
+    } else if (data.status === 'error') {
+      console.log('Failed to send message:', data.message);
+      if (data?.errors) {
+        console.error('Error details:', data?.errors);
+      }
+    }
+
+    // reset after sending
+    name.value = ''
+    email.value = ''
+    phone.value = ''
+    message.value = ''
+  } catch (error) {
+    console.error('Error:', error);
+    formResponse.value = {
+      status: 'error',
+      message: 'There was a network error. Please try again later.',
+    };
+  } finally {
+    isLoading.value = false
+  }
 }
 
 setTheme()
@@ -203,6 +259,8 @@ const projects: projectsType[] = [
     stacks: ['laravel', 'mysql']
   },
 ]
+
+const resumePath: string = '/cv/resume.pdf'
 </script>
 
 <template>
@@ -327,8 +385,8 @@ const projects: projectsType[] = [
               and project management.
             </TextBody>
             <div class="lg:flex lg:justify-start lg:items-center lg:gap-6">
-              <PrimaryButton>Hire me</PrimaryButton>
-              <OutlineButton>Download cv</OutlineButton>
+              <PrimaryButton link href="#contact">Hire me</PrimaryButton>
+              <OutlineButton link href="#">Download cv</OutlineButton>
             </div>
           </div>
         </div>
@@ -476,34 +534,43 @@ const projects: projectsType[] = [
               </div>
             </div>
           </div>
-          <form @submit.prevent="" method="post"
+          <form @submit.prevent="sendEmail" method="post"
             class="mx-auto max-w-[28.125rem] w-full rounded-xl space-y-5 py-6 px-6 shadow-light bg-light-secondary-color text-light-heading-color dark:shadow-dark dark:bg-dark-secondary-color dark:text-dark-heading-color lg:w-1/2">
             <div class="w-full flex flex-col">
               <label for="name" class="ml-1 mb-2 text-sm font-extrabold">Name</label>
-              <input type="text" id="name" name="name"
+              <input type="text" id="name" name="name" v-model="name" required
                 class="px-4 py-2 rounded-lg text-base font-normal text-light-primary-color bg-light-input-background-color placeholder:text-input-placeholder-color focus:outline-none focus:border-light-primary-color focus:ring-1 focus:ring-light-primary-color dark:bg-dark-input-background-color"
                 placeholder="e.g. John Doe">
             </div>
             <div class="w-full flex flex-col">
               <label for="email" class="ml-1 mb-2 text-sm font-extrabold">Email</label>
-              <input type="email" id="email" name="email"
+              <input type="email" id="email" name="email" v-model="email" required
                 class="px-4 py-2 rounded-lg text-base font-normal text-light-primary-color bg-light-input-background-color placeholder:text-input-placeholder-color focus:outline-none focus:border-light-primary-color focus:ring-1 focus:ring-light-primary-color dark:bg-dark-input-background-color"
                 placeholder="e.g. johndoe@gmail.com">
             </div>
             <div class="w-full flex flex-col">
               <label for="phone" class="ml-1 mb-2 text-sm font-extrabold">Phone</label>
-              <input type="number" id="phone" name="phone"
+              <input type="number" id="phone" name="phone" v-model="phone" required
                 class="px-4 py-2 rounded-lg text-base font-normal text-light-primary-color bg-light-input-background-color placeholder:text-input-placeholder-color focus:outline-none focus:border-light-primary-color focus:ring-1 focus:ring-light-primary-color dark:bg-dark-input-background-color"
                 placeholder="e.g. 2340123456789">
             </div>
             <div class="w-full flex flex-col">
               <label for="message" class="ml-1 mb-2 text-sm font-extrabold">Message</label>
-              <textarea
+              <textarea id="message" name="message" v-model="message" required
                 class="px-4 py-2 rounded-lg text-base font-normal text-light-primary-color bg-light-input-background-color placeholder:text-input-placeholder-color focus:outline-none focus:border-light-primary-color focus:ring-1 focus:ring-light-primary-color dark:bg-dark-input-background-color"
                 placeholder="Write Message" rows="4"></textarea>
             </div>
             <div class="w-full">
-              <PrimaryButton type="submit" class="inline-block lg:!max-w-full">SEND</PrimaryButton>
+              <p v-if="formResponse && formResponse.status === 'error'" class="text-[#e33f3f] text-sm mb-2 text-center">
+                {{ formResponse?.message }}
+              </p>
+              <p v-if="formResponse && formResponse.status === 'success'"
+                class="text-[#2fb32f] text-sm mb-2 text-center">
+                {{ formResponse?.message }}
+              </p>
+              <PrimaryButton type="submit" :disabled="isLoading || !name || !email || !phone || !message"
+                class="disabled:opacity-30 disabled:cursor-not-allowed lg:!max-w-full">SEND
+              </PrimaryButton>
             </div>
           </form>
         </div>
