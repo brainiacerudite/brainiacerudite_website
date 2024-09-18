@@ -267,7 +267,7 @@ const projects: projectsType[] = [
   },
 ]
 
-const resumePath: string = '/cv/resume.pdf'
+const resumePath: string = '/cv/Oluwasegun_Brainiac_Resume.pdf'
 </script>
 
 <template>
@@ -394,7 +394,7 @@ const resumePath: string = '/cv/resume.pdf'
             </TextBody>
             <div class="lg:flex lg:justify-start lg:items-center lg:gap-6">
               <PrimaryButton link href="#contact">Hire me</PrimaryButton>
-              <OutlineButton link href="#">Download cv</OutlineButton>
+              <OutlineButton link :href="resumePath" download>Download cv</OutlineButton>
             </div>
           </div>
         </div>
