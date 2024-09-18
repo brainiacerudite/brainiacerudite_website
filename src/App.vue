@@ -70,7 +70,7 @@ const getSocialValue = (name: string) => {
 const sendEmail = async () => {
   isLoading.value = true
   try {
-    const response = await fetch('https://brainiacerudite.com/api', {
+    const response = await fetch('https://brainiacerudite.com/api/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
