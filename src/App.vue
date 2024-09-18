@@ -35,8 +35,15 @@ const formResponse = ref<formResponseType | null>(null);
 const isLoading = ref<boolean>(false)
 
 onMounted(() => {
+  let savedTheme = localStorage.getItem('theme')
+  if (savedTheme) {
+    isDark.value = savedTheme === 'dark' ? true : false
+  }
+  setTheme()
+
+  // set scroll event
   window.addEventListener('scroll', () => {
-    isScroll.value = window.scrollY >= 12 ? true : false
+    isScroll.value = window.scrollY >= 10 ? true : false
   })
 })
 
@@ -47,6 +54,8 @@ onUnmounted(() => {
 const setTheme = (): void => {
   let htmlTagClass = isDark.value ? 'dark' : ''
   document.getElementsByTagName('html')[0].setAttribute('class', `${htmlTagClass}`)
+
+  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
 }
 
 const changeTheme = (): void => {
@@ -101,8 +110,6 @@ const sendEmail = async () => {
     isLoading.value = false
   }
 }
-
-setTheme()
 
 type navItemsType = {
   name: string;
@@ -264,6 +271,7 @@ const resumePath: string = '/cv/resume.pdf'
 </script>
 
 <template>
+  <div class="top"></div>
   <header class="fixed w-full top-0 left-0 z-40 transition-all duration-300 ease-in-out px-3 py-4 lg:py-6"
     :class="{ '!py-2 bg-light-secondary-color shadow-light dark:bg-dark-secondary-color dark:shadow-dark lg:!py-4': isScroll }">
     <div class="container mx-auto">
@@ -351,7 +359,7 @@ const resumePath: string = '/cv/resume.pdf'
           </div>
           <div class="w-full mx-auto max-w-[640px] lg:right-16 lg:top-16">
             <div
-              class="absolute -z-10 h-[40%] w-full max-h-[469px] max-w-[429px] -bottom-[10%] bg-gradient-to-r from-[#6C9FF440] to-[#05288F70] rounded-[190px] blur-[70px] transition-all duration-100 delay-200 ease-in lg:h-full lg:w-full lg:right-[10%] lg:top-[25%]">
+              class="absolute -z-10 h-[40%] w-full max-h-[469px] max-w-[429px] -bottom-[10%] bg-gradient-to-r from-[#6C9FF440] to-[#05288F70] rounded-[190px] blur-[70px] transition-all duration-100 delay-200 ease-in opacity-70 lg:h-full lg:w-full lg:right-[10%] lg:top-[25%]">
             </div>
             <img v-if="isDark" class="relative stacks-animation aspect-square object-contain object-center lg:scale-90"
               src="/images/dark_hero_img_2x.png" alt="Oluwasegun">
