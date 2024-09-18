@@ -21,8 +21,18 @@ header('Content-Type: application/json');
 
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the input data from the POST request
-    $inputData = $_POST;
+    // Read raw input data (to handle JSON data)
+    $inputData = json_decode(file_get_contents('php://input'), true);
+
+    // Check if decoding was successful
+    if ($inputData === null && json_last_error() !== JSON_ERROR_NONE) {
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid JSON format',
+        ]);
+        exit;
+    }
 
     // Initialize an array to hold the sanitized data
     $sanitizedData = [];
@@ -51,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Send the message via email
     if ($sendViaMail) {
-        $mailResponse = sendMail($message, 'New Form Submitted', 'uploads/' . $file_name);
+        $mailResponse = sendMail($message, 'New Form Submitted');
         if ($mailResponse['status']) {
             $status = true;
         } else {
@@ -61,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Send the message via Telegram bot
     if ($sendViaTelegram) {
-        $telegramResponse = sendTelegramDocument($botToken, $chatId, $message, 'uploads/' . $file_name);
+        $telegramResponse = sendTelegramDocument($botToken, $chatId, $message);
         if ($telegramResponse->ok) {
             $status = true;
         } else {
